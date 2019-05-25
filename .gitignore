@@ -4,3 +4,4 @@ obj/
 Assembly-CSharp.csproj
 Assembly-CSharp-vs.csproj
 .vs/
+Box2DLiteUnity3D/Library/
