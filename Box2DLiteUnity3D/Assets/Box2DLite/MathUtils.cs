@@ -36,6 +36,12 @@ namespace bluebean.Box2DLite
             return v;
         }
 
+        public static Vec2 operator *(Vec2 v1, float f)
+        {
+            Vec2 v = new Vec2(v1.x * f, v1.y * f);
+            return v;
+        }
+
         public static Vec2 operator +(Vec2 v1, Vec2 v2)
         {
             Vec2 v = new Vec2(v1.x + v2.x, v1.y + v2.y);
@@ -46,6 +52,11 @@ namespace bluebean.Box2DLite
         {
             Vec2 v = new Vec2(v1.x - v2.x, v1.y - v2.y);
             return v;
+        }
+
+        public static float Dot(Vec2 v1, Vec2 v2)
+        {
+            return v1.x * v2.x + v1.y * v2.y;
         }
     }
 
@@ -85,9 +96,19 @@ namespace bluebean.Box2DLite
             return B;
         }
 
+        public Mat22 Abs()
+        {
+            return new Mat22(col1.Abs(), col2.Abs());
+        }
+
         public static Vec2 operator *(Mat22 mat22, Vec2 v)
         {
             return new Vec2(mat22.col1.x * v.x + mat22.col2.x * v.y, mat22.col1.y * v.x + mat22.col2.y * v.y);
+        }
+
+        public static Mat22 operator *(Mat22 m1, Mat22 m2)
+        {
+            return new Mat22(m1 * m2.col1, m1 * m2.col2);
         }
     }
 

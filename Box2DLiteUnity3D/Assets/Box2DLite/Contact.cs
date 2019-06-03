@@ -22,14 +22,14 @@ namespace bluebean.Box2DLite
 
     public struct Contact
     {
-        Vec2 position;
-        Vec2 normal;
-        Vec2 r1, r2;
-        float separation;
-        float pn;
-        float pt;
-        float pnb;
-        float bias;
-        FeaturePair feature;
+        public Vec2 position;
+        public Vec2 normal;
+        public Vec2 r1, r2;
+        public float separation;
+        public float pn;
+        public float pt;
+        public float pnb;
+        public float bias;
+        public FeaturePair feature;
     }
 }
