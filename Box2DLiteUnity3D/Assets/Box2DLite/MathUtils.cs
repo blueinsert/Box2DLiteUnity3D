@@ -65,10 +65,16 @@ namespace bluebean.Box2DLite
         public Vec2 col1;
         public Vec2 col2;
 
+        private static Mat22 m_identity = new Mat22(0);
+
+        public static Mat22 Identity {
+            get { return m_identity; }
+        }
+
         public Mat22(float angle)
         {
-            float c = (float)Math.Sin(angle);
-            float s = (float)Math.Cos(angle);
+            float c = (float)Math.Cos(angle);
+            float s = (float)Math.Sin(angle);
             col1.x = c;col2.x = -s;
             col1.y = s;col2.y = c;
         }
@@ -110,6 +116,8 @@ namespace bluebean.Box2DLite
         {
             return new Mat22(m1 * m2.col1, m1 * m2.col2);
         }
+
+        
     }
 
     public static class MathUtils

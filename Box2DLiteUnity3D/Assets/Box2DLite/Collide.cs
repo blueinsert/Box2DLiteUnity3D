@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Vec2 = UnityEngine.Vector2;
 
 namespace bluebean.Box2DLite
@@ -98,7 +99,7 @@ namespace bluebean.Box2DLite
             clipVertices = new ClipVertex[2];
             //将碰撞法线转换到incident box的本地坐标系
             Mat22 RotT = rot.Transpose();
-            Vec2 n = -(rot * normal);
+            Vec2 n = -(RotT * normal);
             Vec2 nAbs = n.Abs();
             //todo 貌似有bug,如果不是正方形
             if(nAbs.x > nAbs.y)
@@ -151,11 +152,18 @@ namespace bluebean.Box2DLite
             clipVertices[0].v = pos + rot * clipVertices[0].v;
             clipVertices[1].v = pos + rot * clipVertices[1].v;
         }
-
-        public static int CollideTest(Contact[] contacts, Body bodyA,Body bodyB)
+        
+        /// <summary>
+        /// 通过轴分离算法得到bodyA和bodyB的碰撞点
+        /// </summary>
+        /// <param name="contacts"></param>
+        /// <param name="bodyA"></param>
+        /// <param name="bodyB"></param>
+        /// <returns></returns>
+        public static int CollideTest(Contact[] contacts, Body bodyA, Body bodyB)
         {
             // Setup
-            Vec2 hA = bodyA.m_size * 0.5f;
+            Vec2 hA = bodyA.m_size * 0.5f;//half size
             Vec2 hB = bodyB.m_size * 0.5f;
 
             Vec2 posA = bodyA.m_position;
@@ -164,18 +172,22 @@ namespace bluebean.Box2DLite
             Mat22 RotA = new Mat22(bodyA.m_rotation);
             Mat22 RotB = new Mat22(bodyB.m_rotation);
 
+            //对于二维旋转矩阵，矩阵的转置等于矩阵的逆
             Mat22 RotAT = RotA.Transpose();
             Mat22 RotBT = RotB.Transpose();
 
             Vec2 dp = posB - posA;
-            Vec2 dA = RotAT * dp;//
+            Vec2 dA = RotAT * dp;//将dp从世界坐标系转到A的局部坐标系
             Vec2 dB = RotBT * dp;
 
             Mat22 C = RotAT * RotB;
             Mat22 absC = C.Abs();
             Mat22 absCT = absC.Transpose();
 
+            //确定不相交，提前退出的情形
             // Box A faces
+            //absC*hB会得到B在A的本地坐标系中的轴对齐外接矩形的halfSize
+            DebugDraw.Instance.DrawBox(bodyB.m_position, absC * hB * 2, 0, Color.gray);
             Vec2 faceA =  dA.Abs() - hA - absC * hB;
             if (faceA.x > 0.0f || faceA.y > 0.0f)
                 return 0;
@@ -195,10 +207,11 @@ namespace bluebean.Box2DLite
             separation = faceA.x;
             normal = dA.x > 0.0f ? RotA.col1 : -RotA.col1;
 
-            const float relativeTol = 0.95f;
-            const float absoluteTol = 0.01f;
+            //const float relativeTol = 0.95f;
+            //const float absoluteTol = 0.01f;
 
-            if (faceA.y > relativeTol * separation + absoluteTol * hA.y)
+            if (faceA.y > separation)
+            //if (faceA.y > relativeTol * separation + absoluteTol * hA.y)
             {
                 axis = Axis.FACE_A_Y;
                 separation = faceA.y;
@@ -206,14 +219,16 @@ namespace bluebean.Box2DLite
             }
 
             // Box B faces
-            if (faceB.x > relativeTol * separation + absoluteTol * hB.x)
+            if (faceB.x > separation)
+            //if (faceB.x > relativeTol * separation + absoluteTol * hB.x)
             {
                 axis = Axis.FACE_B_X;
                 separation = faceB.x;
                 normal = dB.x > 0.0f ? RotB.col1 : -RotB.col1;
             }
 
-            if (faceB.y > relativeTol * separation + absoluteTol * hB.y)
+            if (faceB.y > separation)
+            //if (faceB.y > relativeTol * separation + absoluteTol * hB.y)
             {
                 axis =  Axis.FACE_B_Y;
                 separation = faceB.y;
@@ -285,7 +300,10 @@ namespace bluebean.Box2DLite
                     }
                     break;
             }
-
+            foreach (var clipVertex in incidentEdge)
+            {
+               // DebugDraw.Instance.DrawPoint(clipVertex.v, new Color(1,0,0,0.1f));
+            }
             //Step 3
             // clip other face with 5 box planes (1 face plane, 4 edge planes)
 
@@ -293,18 +311,21 @@ namespace bluebean.Box2DLite
             ClipVertex[] clipPoints2 = new ClipVertex[2];
             int np;
 
-            // Clip to box side 1
+            // Clip to negative box side 1
             np = ClipSegmentToLine(clipPoints1, incidentEdge, -sideNormal, negSide, negEdge);
 
             if (np < 2)
                 return 0;
 
-            // Clip to negative box side 1
+            // Clip to positive box side 1
             np = ClipSegmentToLine(clipPoints2, clipPoints1, sideNormal, posSide, posEdge);
 
             if (np < 2)
                 return 0;
-
+            foreach (var clipVertex in clipPoints2)
+            {
+                DebugDraw.Instance.DrawPoint(clipVertex.v, new Color(1, 0, 0, 0.5f));
+            }
             // Now clipPoints2 contains the clipping points.
             // Due to roundoff, it is possible that clipping removes all points.
 
