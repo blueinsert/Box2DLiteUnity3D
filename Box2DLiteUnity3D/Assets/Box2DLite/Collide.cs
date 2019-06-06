@@ -337,13 +337,13 @@ namespace bluebean.Box2DLite
                 if (separation <= 0)
                 {
                     var contact = contacts[numContacts];
-                    contact.separation = separation;
-                    contact.normal = normal;
+                    contact.m_separation = separation;
+                    contact.m_normal = normal;
                     // slide contact point onto reference face (easy to cull)
-                    contact.position = clipPoints2[i].v - frontNormal * separation;
-                    contact.feature = clipPoints2[i].feature;
+                    contact.m_position = clipPoints2[i].v - frontNormal * separation;
+                    contact.m_feature = clipPoints2[i].feature;
                     if (axis == Axis.FACE_B_X || axis == Axis.FACE_B_Y)
-                        Flip(ref contact.feature);
+                        Flip(ref contact.m_feature);
                     contacts[numContacts] = contact;
                     ++numContacts;
                 }

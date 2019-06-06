@@ -42,6 +42,12 @@ namespace bluebean.Box2DLite
             return v;
         }
 
+        public static Vec2 operator *(float f, Vec2 v1)
+        {
+            Vec2 v = new Vec2(v1.x * f, v1.y * f);
+            return v;
+        }
+
         public static Vec2 operator +(Vec2 v1, Vec2 v2)
         {
             Vec2 v = new Vec2(v1.x + v2.x, v1.y + v2.y);
@@ -58,7 +64,22 @@ namespace bluebean.Box2DLite
         {
             return v1.x * v2.x + v1.y * v2.y;
         }
-    }
+
+        public static Vec2 Cross(Vec2 v, float s)
+        {
+            return new Vec2(s * v.y, -s * v.x);
+        }
+
+        public static Vec2 Cross(float s, Vec2 a)
+        {
+            return new Vec2(-s* a.y, s* a.x);
+        }
+
+    public static float Cross(Vec2 a, Vec2 b)
+        {
+            return a.x* b.y - a.y* b.x;
+        }
+}
 
     public struct Mat22
     {
@@ -132,6 +153,21 @@ namespace bluebean.Box2DLite
         public static float Sign(float x)
         {
             return x < 0 ? -1f : 1f;
+        }
+
+        public static float Min(float a, float b)
+        {
+            return a < b ? a : b;
+        }
+
+        public static float Max(float a, float b)
+        {
+            return a > b ? a : b;
+        }
+
+        public static float Clamp(float a, float low, float high)
+        {
+            return Max(low, Min(a, high));
         }
     }
 }

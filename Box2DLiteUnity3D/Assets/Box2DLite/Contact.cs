@@ -20,16 +20,17 @@ namespace bluebean.Box2DLite
         public int value;
     }
 
-    public struct Contact
+    public class Contact
     {
-        public Vec2 position;
-        public Vec2 normal;
-        public Vec2 r1, r2;
-        public float separation;
-        public float pn;
-        public float pt;
-        public float pnb;
-        public float bias;
-        public FeaturePair feature;
+        public Vec2 m_position;
+        public Vec2 m_normal;
+        public Vec2 m_r1, m_r2;
+        public float m_separation;
+        public float m_pn;
+        public float m_pt;
+        public float m_pnb;
+        public float m_bias;
+        public float m_massNormal,m_massTangent;
+        public FeaturePair m_feature;
     }
 }

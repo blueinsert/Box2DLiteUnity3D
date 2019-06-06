@@ -23,9 +23,8 @@ namespace bluebean.Box2DLite
             for (int i = 0; i < contactCount; i++)
             {
                 var contact = contacts[i];
-                debugDraw.DrawPoint(contact.position, Color.red);
+                debugDraw.DrawPoint(contact.m_position, Color.red);
             }
-           
         }
 
         void ProcessInput()
