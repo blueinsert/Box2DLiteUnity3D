@@ -125,7 +125,7 @@ namespace bluebean.Box2DLite
 
                 Vec2 r1 = c.m_position - m_body1.m_position;
                 Vec2 r2 = c.m_position - m_body2.m_position;
-
+                 
                 // Precompute normal mass, tangent mass, and bias.
                 float rn1 = Vec2.Dot(r1, c.m_normal);
                 float rn2 = Vec2.Dot(r2, c.m_normal);
