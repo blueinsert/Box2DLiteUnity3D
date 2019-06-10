@@ -63,6 +63,18 @@ namespace bluebean.Box2DLite
         {
             m_body1 = b1;
             m_body2 = b2;
+            /*
+            if (b1.Index < b2.Index)
+            {
+                m_body1 = b1;
+                m_body2 = b2;
+            }
+            else
+            {
+                m_body1 = b2;
+                m_body2 = b1;
+            }
+            */
             for (int i = 0; i < MAX_POINTS; i++)
             {
                 m_contacts[i] = new Contact();
@@ -144,7 +156,7 @@ namespace bluebean.Box2DLite
                 kTangent += m_body1.m_invI * (Vec2.Dot(r1, r1) - rt1 * rt1) + m_body2.m_invI * (Vec2.Dot(r2, r2) - rt2 * rt2);
                 c.m_massTangent = 1.0f / kTangent;
 
-                c.m_bias = -k_biasFactor * deltaTime * MathUtils.Min(0.0f, c.m_separation + k_allowedPenetration);
+                c.m_bias = -k_biasFactor * (1/deltaTime) * MathUtils.Min(0.0f, c.m_separation + k_allowedPenetration);
 
                 if (World.accumulateImpulses)
                 {

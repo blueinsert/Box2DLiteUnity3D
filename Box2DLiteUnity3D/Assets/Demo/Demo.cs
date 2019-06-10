@@ -7,8 +7,9 @@ namespace bluebean.Box2DLite
 {
     public class Demo : MonoBehaviour
     {
+        private float m_deltaTime = 1 / 60.0f;
         private static readonly Vec2 Gravity = new Vec2(0,-10f);
-        private const int MaxIter = 99;
+        private const int MaxIter = 20;
         
         private Body[] m_bodies = new Body[200];//Body缓存池
         private Joint[] m_joints = new Joint[100];//Joint缓存池
@@ -20,6 +21,8 @@ namespace bluebean.Box2DLite
         delegate void DemoInitDelegate(Body[] bs, Joint[] js, World world);
 
         private DemoInitDelegate[] m_demoInitFuncs = new DemoInitDelegate[] {Demo1, Demo2, Demo3, Demo4, Demo5};
+
+        private int m_numBodies = 0;
 
         readonly string[] DemoStrings = {
             "Demo 1: A Single Box",
@@ -36,11 +39,15 @@ namespace bluebean.Box2DLite
 
         private int m_demoIndex = 0;
 
+        private Vector3 m_lastMiddleMouseStartDragPosition;
+
         void Awake()
         {
             for (int i = 0; i < 200; i++)
             {
-                m_bodies[i] = new Body();
+                var body = new Body();
+                body.Index = i;
+                m_bodies[i] = body;
             }
             for (int i = 0; i < 100; i++)
             {
@@ -84,6 +91,17 @@ namespace bluebean.Box2DLite
 
         private static void Demo2(Body[] bs, Joint[] js, World world)
         {
+            int i = 0;
+            Body b = bs[i];
+            b.Set(new Vec2(1f, 1f), 200f);
+            b.m_position.Set(0f, 4f);
+            world.Add(b);
+            i++;
+
+            b = bs[i];
+            b.Set(new Vec2(100f, 20f), float.MaxValue);
+            b.m_position.Set(0, -0.5f * b.m_size.y);
+            world.Add(b);
         }
 
         // Varying friction coefficients
@@ -242,10 +260,40 @@ namespace bluebean.Box2DLite
             }
         }
 
+        private void PrecessMouseEvent()
+        {
+            //鼠标滚轮进行缩放
+            if (Input.mouseScrollDelta.y != 0f)
+            {
+                Camera.main.orthographicSize = Camera.main.orthographicSize * (1f - Input.mouseScrollDelta.y / 10f);
+            }
+            //按住鼠标中键进行拖动
+            if (Input.GetMouseButtonDown(2))
+            {
+                m_lastMiddleMouseStartDragPosition = Input.mousePosition;
+            }
+            else if (Input.GetMouseButton(2))
+            {
+                if (m_lastMiddleMouseStartDragPosition != Input.mousePosition)
+                {
+                    //var offset = Input.mousePosition - lastMiddleMouseStartDragPosition;
+
+                    var worldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f)) - Camera.main.ScreenToWorldPoint(new Vector3(m_lastMiddleMouseStartDragPosition.x, m_lastMiddleMouseStartDragPosition.y, 0f));
+                    Camera.main.transform.position -= worldPos;
+                    m_lastMiddleMouseStartDragPosition = Input.mousePosition;
+                }
+            }
+            else if (Input.GetMouseButton(2))
+            {
+                m_lastMiddleMouseStartDragPosition = Vector2.zero;
+            }
+        }
+        
         void Update()
         {
             ProcessKeyboardEvent();
-            m_physicsWorld.Step(Time.deltaTime);
+            PrecessMouseEvent();
+            m_physicsWorld.Step(m_deltaTime);
             Draw();
         }
 
@@ -255,7 +303,14 @@ namespace bluebean.Box2DLite
             foreach (var body in m_physicsWorld.m_bodies)
             {
                 m_debugDraw.DrawBox(body.m_position, body.m_size, body.m_rotation, Color.blue);
-            } 
+            }
+            foreach (var arbiter in m_physicsWorld.m_arbiters)
+            {
+                foreach (var contact in arbiter.Value.m_contacts)
+                {
+                    m_debugDraw.DrawPoint(contact.m_position, Color.red);
+                }
+            }
         }
 
         void OnPostRender()

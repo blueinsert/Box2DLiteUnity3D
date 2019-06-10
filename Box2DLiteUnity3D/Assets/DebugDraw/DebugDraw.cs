@@ -128,7 +128,7 @@ namespace bluebean.Box2DLite
             //draw point
             foreach (var ddVertex in m_vertexListBatch)
             {
-                DrawPointGL(new Vector2(ddVertex.m_positions[0].x, ddVertex.m_positions[0].y), 0.1f, 36,
+                DrawPointGL(new Vector2(ddVertex.m_positions[0].x, ddVertex.m_positions[0].y), 0.04f, 36,
                     ddVertex.m_color);
             }
             //draw line

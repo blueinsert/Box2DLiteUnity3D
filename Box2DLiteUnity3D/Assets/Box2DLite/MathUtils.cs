@@ -66,16 +66,35 @@ namespace bluebean.Box2DLite
             return v1.x * v2.x + v1.y * v2.y;
         }
 
+        /// <summary>
+        /// equal with Vector3(v.x,v.y,0)*Vector3(0,0,s)
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static Vec2 Cross(Vec2 v, float s)
         {
             return new Vec2(s * v.y, -s * v.x);
         }
 
+        /// <summary>
+        /// equal with Vector3(0,0,s)*Vector3(a.x,a.y,0)
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="a"></param>
+        /// <returns></returns>
         public static Vec2 Cross(float s, Vec2 a)
         {
             return new Vec2(-s * a.y, s * a.x);
         }
 
+        /// <summary>
+        /// equal with ||Vector3(a.x,a.y,0)*Vector3(b.x,b.y,0)||
+        /// == a.x*b.y - a.y*b.x
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static float Cross(Vec2 a, Vec2 b)
         {
             return a.x * b.y - a.y * b.x;
