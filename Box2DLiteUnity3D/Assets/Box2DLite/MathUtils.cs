@@ -8,7 +8,8 @@ namespace bluebean.Box2DLite
     {
         public float x, y;
 
-        public Vec2(float _x, float _y) {
+        public Vec2(float _x, float _y)
+        {
             x = _x;
             y = _y;
         }
@@ -72,14 +73,14 @@ namespace bluebean.Box2DLite
 
         public static Vec2 Cross(float s, Vec2 a)
         {
-            return new Vec2(-s* a.y, s* a.x);
+            return new Vec2(-s * a.y, s * a.x);
         }
 
-    public static float Cross(Vec2 a, Vec2 b)
+        public static float Cross(Vec2 a, Vec2 b)
         {
-            return a.x* b.y - a.y* b.x;
+            return a.x * b.y - a.y * b.x;
         }
-}
+    }
 
     public struct Mat22
     {
@@ -88,7 +89,8 @@ namespace bluebean.Box2DLite
 
         private static Mat22 m_identity = new Mat22(0);
 
-        public static Mat22 Identity {
+        public static Mat22 Identity
+        {
             get { return m_identity; }
         }
 
@@ -96,8 +98,8 @@ namespace bluebean.Box2DLite
         {
             float c = (float)Math.Cos(angle);
             float s = (float)Math.Sin(angle);
-            col1.x = c;col2.x = -s;
-            col1.y = s;col2.y = c;
+            col1.x = c; col2.x = -s;
+            col1.y = s; col2.y = c;
         }
 
         public Mat22(Vec2 _col1, Vec2 _col2)
@@ -117,7 +119,7 @@ namespace bluebean.Box2DLite
             float b = col2.x;
             float c = col1.y;
             float d = col2.y;
-            float det = a*d -b * c;
+            float det = a * d - b * c;
             det = 1.0f / det;
             Mat22 B = new Mat22(new Vec2(det * d, -det * c), new Vec2(-det * b, det * a));
             return B;
@@ -138,7 +140,7 @@ namespace bluebean.Box2DLite
             return new Mat22(m1 * m2.col1, m1 * m2.col2);
         }
 
-        
+
     }
 
     public static class MathUtils

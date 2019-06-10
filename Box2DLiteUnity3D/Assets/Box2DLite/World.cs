@@ -11,9 +11,9 @@ namespace bluebean.Box2DLite
         public readonly Dictionary<ArbiterKey, Arbiter> m_arbiters = new Dictionary<ArbiterKey, Arbiter>();
         public Vec2 m_gravity;
         public int m_iterations;
-        public static bool accumulateImpulses;
-        public static bool warmStarting;
-        public static bool positionCorrection;
+        public static bool accumulateImpulses = true;
+        public static bool warmStarting = true;
+        public static bool positionCorrection = true;
 
         public World(Vec2 gravity, int iterations)
         {
@@ -33,6 +33,10 @@ namespace bluebean.Box2DLite
 
         public void Clear()
         {
+            foreach (var body in m_bodies)
+            {
+                body.Clear();
+            }
             m_bodies.Clear();
             m_joints.Clear();
             m_arbiters.Clear();

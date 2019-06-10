@@ -37,6 +37,22 @@ namespace bluebean.Box2DLite
             m_invI = 0;
         }
 
+        public void Clear()
+        {
+            m_position = new Vec2(0, 0);
+            m_rotation = 0;
+            m_velocity = new Vec2(0, 0);
+            m_angularVelocity = 0;
+            m_force = new Vec2(0, 0);
+            m_friction = 0.2f;
+
+            m_size = new Vec2(1, 1);
+            m_mass = float.MaxValue;
+            m_invMass = 0;
+            m_I = float.MaxValue;
+            m_invI = 0;
+        }
+
         public void Set(Vec2 size, float m)
         {
             m_size = size;

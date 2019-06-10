@@ -63,6 +63,10 @@ namespace bluebean.Box2DLite
         {
             m_body1 = b1;
             m_body2 = b2;
+            for (int i = 0; i < MAX_POINTS; i++)
+            {
+                m_contacts[i] = new Contact();
+            }
             m_numContacts = Collide.CollideTest(m_contacts, m_body1, m_body2);
             m_friction = Mathf.Sqrt(m_body1.m_friction * m_body2.m_friction);
         }
@@ -187,7 +191,7 @@ namespace bluebean.Box2DLite
                 {
                     dPn = MathUtils.Max(dPn, 0.0f);
                 }
-                //std::cout << "dPn:" << dPn << " ";
+
                 // Apply contact impulse
                 Vec2 Pn = dPn * c.m_normal;
 
