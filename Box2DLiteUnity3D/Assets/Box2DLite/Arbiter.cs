@@ -29,7 +29,8 @@ namespace bluebean.Box2DLite
                 return false;
             }
             var otherKey = obj as ArbiterKey;
-            if (this.body1 == otherKey.body1 && this.body2 == otherKey.body2)
+            if ((this.body1 == otherKey.body1 && this.body2 == otherKey.body2)
+                ||(this.body1 == otherKey.body2 && this.body2 == otherKey.body1))
             {
                 return true;
             }
@@ -60,10 +61,7 @@ namespace bluebean.Box2DLite
         public float m_friction;
 
         public Arbiter(Body b1, Body b2)
-        {
-            m_body1 = b1;
-            m_body2 = b2;
-            /*
+        {   
             if (b1.Index < b2.Index)
             {
                 m_body1 = b1;
@@ -74,7 +72,7 @@ namespace bluebean.Box2DLite
                 m_body1 = b2;
                 m_body2 = b1;
             }
-            */
+            
             for (int i = 0; i < MAX_POINTS; i++)
             {
                 m_contacts[i] = new Contact();

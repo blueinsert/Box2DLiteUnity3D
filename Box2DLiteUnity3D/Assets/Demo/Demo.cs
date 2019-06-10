@@ -22,7 +22,7 @@ namespace bluebean.Box2DLite
 
         private DemoInitDelegate[] m_demoInitFuncs = new DemoInitDelegate[] {Demo1, Demo2, Demo3, Demo4, Demo5};
 
-        private int m_numBodies = 0;
+        private static int m_numBodies = 0;
 
         readonly string[] DemoStrings = {
             "Demo 1: A Single Box",
@@ -60,12 +60,12 @@ namespace bluebean.Box2DLite
             InitDemo(0);    
         }
 
-        private static void LaunchBomb(World world)
+        private static void LaunchBomb(Body[] bs, Joint[] js, World world)
         {
-            Body bomb = new Body();
+            Body bomb = bs[m_numBodies];
             bomb.Set(new Vec2(1.0f, 1.0f), 50.0f);
             bomb.m_friction = 0.2f;
-            world.Add(bomb);
+            world.Add(bomb);m_numBodies++;
             System.Random random = new System.Random(Time.frameCount);
             bomb.m_position.Set((float)(random.NextDouble() - 0.5) * 30, 15.0f);
             bomb.m_rotation = (float) (random.NextDouble() - 0.5) * 3;
@@ -79,14 +79,14 @@ namespace bluebean.Box2DLite
             int i = 0;
             Body b = bs[i];
             b.Set(new Vec2(100f,20f), float.MaxValue);
-            b.m_position.Set(0, -0.5f * b.m_size.y);
-            world.Add(b);
+            b.m_position.Set(0, -0.5f * b.m_size.y);         
+            world.Add(b); m_numBodies++;
             i++;
-
             b = bs[i];
             b.Set(new Vec2(1f, 1f), 200f);
             b.m_position.Set(0f,4f);
-            world.Add(b);
+            b.m_rotation = 50 / 180f * 3.14159f;
+            world.Add(b); m_numBodies++;
         }
 
         private static void Demo2(Body[] bs, Joint[] js, World world)
@@ -95,13 +95,14 @@ namespace bluebean.Box2DLite
             Body b = bs[i];
             b.Set(new Vec2(1f, 1f), 200f);
             b.m_position.Set(0f, 4f);
-            world.Add(b);
+            b.m_rotation = 50 / 180f * 3.14159f;
+            world.Add(b); m_numBodies++;
             i++;
 
             b = bs[i];
             b.Set(new Vec2(100f, 20f), float.MaxValue);
             b.m_position.Set(0, -0.5f * b.m_size.y);
-            world.Add(b);
+            world.Add(b); m_numBodies++;
         }
 
         // Varying friction coefficients
@@ -111,35 +112,35 @@ namespace bluebean.Box2DLite
             Body b = bs[i];
             b.Set(new Vec2(100.0f, 20.0f), float.MaxValue);
             b.m_position.Set(0.0f, -0.5f * b.m_size.y);
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
             b.Set(new Vec2(13.0f, 0.25f), float.MaxValue);
             b.m_position.Set(-2.0f, 11.0f);
             b.m_rotation = -0.25f;
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
             b.Set(new Vec2(0.25f, 1.0f), float.MaxValue);
             b.m_position.Set(5.25f, 9.5f);
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
             b.Set(new Vec2(13.0f, 0.25f), float.MaxValue);
             b.m_position.Set(2.0f, 7.0f);
             b.m_rotation = 0.25f;
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
             b.Set(new Vec2(0.25f, 1.0f), float.MaxValue);
             b.m_position.Set(-5.25f, 5.5f);
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
             b.Set(new Vec2(13.0f, 0.25f), float.MaxValue);
             b.m_position.Set(-2.0f, 3.0f);
             b.m_rotation = -0.25f;
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
 
@@ -149,7 +150,7 @@ namespace bluebean.Box2DLite
                 b.Set(new Vec2(0.5f, 0.5f), 25.0f);
                 b.m_friction = friction[j];
                 b.m_position.Set(-7.5f + 2.0f * j, 14.0f);
-                world.Add(b);
+                world.Add(b); m_numBodies++;
                 i++;
                 b = bs[i];
             }
@@ -163,7 +164,7 @@ namespace bluebean.Box2DLite
             b.m_friction = 0.2f;
             b.m_position.Set(0.0f, -0.5f * b.m_size.y);
             b.m_rotation = 0.0f;
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++; b = bs[i];
             for (int j = 0; j < 10; ++j)
             {
@@ -172,7 +173,7 @@ namespace bluebean.Box2DLite
                 System.Random random = new System.Random(Time.frameCount);
                 float x = (float) ((random.NextDouble() - 0.5f) / 5f);
                 b.m_position.Set(x, 0.51f + 1.05f * j);
-                world.Add(b);
+                world.Add(b); m_numBodies++;
                 i++; b = bs[i];
             }
         }
@@ -186,7 +187,7 @@ namespace bluebean.Box2DLite
             b.m_friction = 0.2f;
             b.m_position.Set(0.0f, -0.5f * b.m_size.y);
             b.m_rotation = 0.0f;
-            world.Add(b);
+            world.Add(b); m_numBodies++;
             i++;
             b = bs[i];
 
@@ -201,7 +202,7 @@ namespace bluebean.Box2DLite
                     b.Set(new Vec2(1.0f, 1.0f), 10.0f);
                     b.m_friction = 0.2f;
                     b.m_position = y;
-                    world.Add(b);
+                    world.Add(b); m_numBodies++;
                     i++;
                     b = bs[i];
 
@@ -222,29 +223,29 @@ namespace bluebean.Box2DLite
 
         void ProcessKeyboardEvent()
         {
-            if (Input.GetKeyDown(KeyCode.Keypad0))
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 InitDemo(0);
             }
-            if (Input.GetKeyDown(KeyCode.Keypad1))
+            if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 InitDemo(1);
             }
-            if (Input.GetKeyDown(KeyCode.Keypad2))
+            if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 InitDemo(2);
             }
-            if (Input.GetKeyDown(KeyCode.Keypad3))
+            if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 InitDemo(3);
             }
-            if (Input.GetKeyDown(KeyCode.Keypad4))
+            if (Input.GetKeyDown(KeyCode.Alpha5))
             {
                 InitDemo(4);
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                LaunchBomb(m_physicsWorld);
+                LaunchBomb(m_bodies, m_joints, m_physicsWorld);
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
