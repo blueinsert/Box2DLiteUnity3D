@@ -30,6 +30,12 @@ namespace bluebean.Box2DLite
             return new Vec2(Math.Abs(x), Math.Abs(y));
         }
 
+        public Vec2 Normalize()
+        {
+            float l = Length();
+            return new Vec2(x/l,y/l);
+        }
+
         public static Vec2 operator -(Vec2 v)
         {
             v.x = -v.x;
@@ -99,6 +105,7 @@ namespace bluebean.Box2DLite
         {
             return a.x * b.y - a.y * b.x;
         }
+
     }
 
     public struct Mat22
@@ -158,7 +165,6 @@ namespace bluebean.Box2DLite
         {
             return new Mat22(m1 * m2.col1, m1 * m2.col2);
         }
-
 
     }
 

@@ -6,7 +6,7 @@ namespace bluebean.Box2DLite
 {
     public class World
     {
-        public readonly  List<Body> m_bodies = new List<Body>();
+        public readonly List<Body> m_bodies = new List<Body>();
         public readonly List<Joint> m_joints = new List<Joint>();
         public readonly Dictionary<ArbiterKey, Arbiter> m_arbiters = new Dictionary<ArbiterKey, Arbiter>();
         public Vec2 m_gravity;
@@ -42,12 +42,49 @@ namespace bluebean.Box2DLite
             m_arbiters.Clear();
         }
 
+        /// <summary>
+        /// 相交检测，接触约束更新
+        /// </summary>
+        public void BroadPhase()
+        {
+            // O(n^2) broad-phase
+            for (int i = 0; i < m_bodies.Count; ++i)
+            {
+                Body bi = m_bodies[i];
+                for (int j = i + 1; j < m_bodies.Count; ++j)
+                {
+                    Body bj = m_bodies[j];
+                    if (bi.m_invMass == 0.0f && bj.m_invMass == 0.0f)
+                        continue;
+                    Arbiter newArb = new Arbiter(bi, bj);
+                    ArbiterKey key = new ArbiterKey(bi, bj);
+                    if (newArb.m_numContacts > 0)
+                    {
+                        Arbiter iter;
+                        if (!m_arbiters.TryGetValue(key, out iter))
+                        {
+                            m_arbiters.Add(key, newArb);
+                        }
+                        else
+                        {
+                            iter.Update(newArb.m_contacts, newArb.m_numContacts);
+                        }
+                    }
+                    else
+                    {
+                        m_arbiters.Remove(key);
+                    }
+                }
+            }
+        }
+
         public void Step(float deltaTime)
         {
             // Determine overlapping bodies and update contact points.
             BroadPhase();
 
             // Integrate forces.
+            //对应用力积分得到速度的变化，变化的速度会在约束求解阶段合理化
             for (int i = 0; i < m_bodies.Count; ++i)
             {
                 Body b = m_bodies[i];
@@ -69,6 +106,7 @@ namespace bluebean.Box2DLite
             }
 
             // Perform iterations
+            //约束求解，最后得到接近符合约束的速度值
             for (int i = 0; i < m_iterations; ++i)
             {
                 foreach (var arbiter in m_arbiters.Values)
@@ -94,38 +132,6 @@ namespace bluebean.Box2DLite
             }
         }
 
-        public void BroadPhase()
-        {
-            // O(n^2) broad-phase
-            for (int i = 0; i < m_bodies.Count; ++i)
-            {
-                Body bi = m_bodies[i];
-                for (int j = i + 1; j < m_bodies.Count; ++j)
-                {
-                    Body bj = m_bodies[j];
-                    if (bi.m_invMass == 0.0f && bj.m_invMass == 0.0f)
-                        continue;
-                    Arbiter newArb = new Arbiter(bi, bj);
-                    ArbiterKey key = new ArbiterKey(bi, bj);
-                    if (newArb.m_numContacts > 0)
-                    {
-                        Arbiter iter;
-                        m_arbiters.TryGetValue(key, out iter);
-                        if (!m_arbiters.TryGetValue(key, out iter))
-                        {
-                            m_arbiters.Add(key, newArb);
-                        }
-                        else
-                        {
-                            iter.Update(newArb.m_contacts, newArb.m_numContacts);
-                        }
-                    }
-                    else
-                    {
-                        m_arbiters.Remove(key);
-                    }
-                }
-            }
-        }
+       
     }
 }

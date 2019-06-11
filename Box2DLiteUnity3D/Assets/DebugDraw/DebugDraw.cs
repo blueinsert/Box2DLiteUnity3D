@@ -173,5 +173,17 @@ namespace bluebean.Box2DLite
             m_vertexListBatch.Add(DDVertex.FromPoint(point, color));
         }
 
+        public void DrawSingleArrowLine(Vec2 start, Vec2 end,float arrowLen, Color color)
+        {
+            DrawLine(start, end, color);
+            var middle = (start + end) * 0.5f;
+            var n = (end - start).Normalize();
+            var dir1 = new Mat22(30 / 180f * 3.14159f) * n;
+            var dir2 = new Mat22(-30 / 180f * 3.14159f) * n;
+            var p1 = end - dir1 * arrowLen;
+            var p2 = end - dir2 * arrowLen;
+            DrawLine(p1, end, color);
+            DrawLine(p2, end, color);
+        }
     }
 }

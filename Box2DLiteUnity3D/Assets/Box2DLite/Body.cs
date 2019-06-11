@@ -22,7 +22,7 @@ namespace bluebean.Box2DLite
 
         public Vec2 m_size;//几何形状为矩形
 
-        public int Index { get; set; }
+        public bool m_isBomb = false;
 
         public Body() {
             m_position = new Vec2(0, 0);

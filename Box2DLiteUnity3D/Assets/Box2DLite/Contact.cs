@@ -5,6 +5,13 @@ using Vec2 = UnityEngine.Vector2;
 
 namespace bluebean.Box2DLite
 {
+    /// <summary>
+    /// 顶点特征数据是一个四元组(in1,out1,in2,out2),
+    /// 由形成顶点的两条边来表征
+    /// 没被裁剪的顶点的特征数据是（in1,out1,_,_)或者（_,_,in2,out2)
+    /// 被裁剪的顶点由两个Box的两条边形成
+    /// 内容为(in1,_,_,out2)或者(_,out1,in2,_)
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Size =4)]
     public struct FeaturePair
     {
@@ -20,6 +27,9 @@ namespace bluebean.Box2DLite
         public int value;
     }
 
+    /// <summary>
+    /// 接触类，由Arbiter类持有
+    /// </summary>
     public class Contact
     {
         public Vec2 m_position;

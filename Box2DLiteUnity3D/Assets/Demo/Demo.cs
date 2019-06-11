@@ -46,7 +46,6 @@ namespace bluebean.Box2DLite
             for (int i = 0; i < 200; i++)
             {
                 var body = new Body();
-                body.Index = i;
                 m_bodies[i] = body;
             }
             for (int i = 0; i < 100; i++)
@@ -63,6 +62,7 @@ namespace bluebean.Box2DLite
         private static void LaunchBomb(Body[] bs, Joint[] js, World world)
         {
             Body bomb = bs[m_numBodies];
+            bomb.m_isBomb = true;
             bomb.Set(new Vec2(1.0f, 1.0f), 50.0f);
             bomb.m_friction = 0.2f;
             world.Add(bomb);m_numBodies++;
@@ -217,6 +217,7 @@ namespace bluebean.Box2DLite
         void InitDemo(int index)
         {
             m_physicsWorld.Clear();
+            m_numBodies = 0;
             m_demoInitFuncs[index](m_bodies, m_joints, m_physicsWorld);
             m_demoIndex = index;
         }
@@ -303,13 +304,17 @@ namespace bluebean.Box2DLite
             m_debugDraw.Clear();
             foreach (var body in m_physicsWorld.m_bodies)
             {
-                m_debugDraw.DrawBox(body.m_position, body.m_size, body.m_rotation, Color.blue);
+                m_debugDraw.DrawBox(body.m_position, body.m_size, body.m_rotation, body.m_isBomb? Color.red:Color.blue);
             }
             foreach (var arbiter in m_physicsWorld.m_arbiters)
             {
                 foreach (var contact in arbiter.Value.m_contacts)
                 {
                     m_debugDraw.DrawPoint(contact.m_position, Color.red);
+                    float normalLength = 0.5f;
+                    float arrowLength = 0.2f;
+                    m_debugDraw.DrawSingleArrowLine(contact.m_position,
+                        contact.m_position + contact.m_normal * normalLength, arrowLength, Color.yellow);
                 }
             }
         }

@@ -61,18 +61,9 @@ namespace bluebean.Box2DLite
         public float m_friction;
 
         public Arbiter(Body b1, Body b2)
-        {   
-            if (b1.Index < b2.Index)
-            {
-                m_body1 = b1;
-                m_body2 = b2;
-            }
-            else
-            {
-                m_body1 = b2;
-                m_body2 = b1;
-            }
-            
+        {
+            m_body1 = b1;
+            m_body2 = b2;
             for (int i = 0; i < MAX_POINTS; i++)
             {
                 m_contacts[i] = new Contact();
