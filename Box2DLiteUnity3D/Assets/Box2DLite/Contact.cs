@@ -36,9 +36,21 @@ namespace bluebean.Box2DLite
         public Vec2 m_normal;
         public Vec2 m_r1, m_r2;
         public float m_separation;
+        /// <summary>
+        /// 法线方向上的累积冲量
+        /// </summary>
         public float m_pn;
+        /// <summary>
+        /// 切线方向上的累积冲量
+        /// </summary>
         public float m_pt;
+        /// <summary>
+        /// ???
+        /// </summary>
         public float m_pnb;
+        /// <summary>
+        /// 位置修正
+        /// </summary>
         public float m_bias;
         public float m_massNormal,m_massTangent;
         public FeaturePair m_feature;
