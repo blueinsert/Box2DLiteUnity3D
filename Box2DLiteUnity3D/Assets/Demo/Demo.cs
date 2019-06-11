@@ -16,8 +16,6 @@ namespace bluebean.Box2DLite
 
         World m_physicsWorld = new World(Gravity, MaxIter);
 
-        DebugDraw m_debugDraw = DebugDraw.Instance;
-
         delegate void DemoInitDelegate(Body[] bs, Joint[] js, World world);
 
         private DemoInitDelegate[] m_demoInitFuncs = new DemoInitDelegate[] {Demo1, Demo2, Demo3, Demo4, Demo5};
@@ -39,7 +37,9 @@ namespace bluebean.Box2DLite
 
         private int m_demoIndex = 0;
 
-        private Vector3 m_lastMiddleMouseStartDragPosition;
+        DebugDraw m_debugDraw = DebugDraw.Instance;
+        private bool m_drawContactPoint = false;
+        private bool m_drawContactNormal = false;
 
         void Awake()
         {
@@ -262,39 +262,11 @@ namespace bluebean.Box2DLite
             }
         }
 
-        private void PrecessMouseEvent()
-        {
-            //鼠标滚轮进行缩放
-            if (Input.mouseScrollDelta.y != 0f)
-            {
-                Camera.main.orthographicSize = Camera.main.orthographicSize * (1f - Input.mouseScrollDelta.y / 10f);
-            }
-            //按住鼠标中键进行拖动
-            if (Input.GetMouseButtonDown(2))
-            {
-                m_lastMiddleMouseStartDragPosition = Input.mousePosition;
-            }
-            else if (Input.GetMouseButton(2))
-            {
-                if (m_lastMiddleMouseStartDragPosition != Input.mousePosition)
-                {
-                    //var offset = Input.mousePosition - lastMiddleMouseStartDragPosition;
-
-                    var worldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f)) - Camera.main.ScreenToWorldPoint(new Vector3(m_lastMiddleMouseStartDragPosition.x, m_lastMiddleMouseStartDragPosition.y, 0f));
-                    Camera.main.transform.position -= worldPos;
-                    m_lastMiddleMouseStartDragPosition = Input.mousePosition;
-                }
-            }
-            else if (Input.GetMouseButton(2))
-            {
-                m_lastMiddleMouseStartDragPosition = Vector2.zero;
-            }
-        }
+        
         
         void Update()
         {
             ProcessKeyboardEvent();
-            PrecessMouseEvent();
             m_physicsWorld.Step(m_deltaTime);
             Draw();
         }
@@ -310,18 +282,19 @@ namespace bluebean.Box2DLite
             {
                 foreach (var contact in arbiter.Value.m_contacts)
                 {
-                    m_debugDraw.DrawPoint(contact.m_position, Color.red);
-                    float normalLength = 0.5f;
-                    float arrowLength = 0.2f;
-                    m_debugDraw.DrawSingleArrowLine(contact.m_position,
-                        contact.m_position + contact.m_normal * normalLength, arrowLength, Color.yellow);
+                    if (m_drawContactPoint)
+                    {
+                        m_debugDraw.DrawPoint(contact.m_position, Color.red);
+                    }
+                    if (m_drawContactNormal)
+                    {
+                        float normalLength = 0.5f;
+                        float arrowLength = 0.2f;
+                        m_debugDraw.DrawSingleArrowLine(contact.m_position,
+                            contact.m_position + contact.m_normal * normalLength, arrowLength, Color.yellow);
+                    }  
                 }
             }
-        }
-
-        void OnPostRender()
-        {
-            m_debugDraw.DrawAllGL();
         }
 
         void OnGUI()
@@ -331,6 +304,13 @@ namespace bluebean.Box2DLite
             GUILayout.Label(string.Format("(A)ccumulation {0}", World.accumulateImpulses ? "ON" : "OFF"));
             GUILayout.Label(string.Format("(P)osition Correction {0}", World.positionCorrection ? "ON" : "OFF"));
             GUILayout.Label(string.Format("(W)arm Starting {0}", World.warmStarting ? "ON" : "OFF"));
+            GUILayout.Space(3);
+            GUILayout.Label("Render Options:");
+            GUILayout.BeginHorizontal(GUIStyle.none);
+            m_drawContactPoint = GUILayout.Toggle(m_drawContactPoint, "ContactPoint");
+            m_drawContactNormal = GUILayout.Toggle(m_drawContactNormal, "ContactNormal");
+            GUILayout.EndHorizontal();
+            
         }
     }
 }

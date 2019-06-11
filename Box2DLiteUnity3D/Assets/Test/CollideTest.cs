@@ -81,14 +81,9 @@ namespace bluebean.Box2DLite
             }
         }
 
-        void OnDrawGizmos()
-        {
-            debugDraw.DrawAllGizmos();
-        }
-
         void OnPostRender()
         {
-            debugDraw.DrawAllGL();
+            debugDraw.DrawBatch();
         }
 
     }

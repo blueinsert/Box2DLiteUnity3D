@@ -41,12 +41,12 @@ namespace bluebean.Box2DLite
         /// <summary>
         /// 材质
         /// </summary>
-        private static Material lineMaterial;
+        private  Material lineMaterial;
 
         private List<DDVertex> m_vertexListBatch = new List<DDVertex>();
         private List<DDVertex> m_lineListBatch = new List<DDVertex>();
 
-        static void CreateLineMaterial()
+        private void CreateLineMaterial()
         {
             //如果材质球不存在
             if (!lineMaterial)
@@ -71,25 +71,7 @@ namespace bluebean.Box2DLite
             m_lineListBatch.Clear();
         }
 
-        public void DrawAllGizmos()
-        {
-            //draw point
-            foreach (var ddVertex in m_vertexListBatch)
-            {
-                Gizmos.color = ddVertex.m_color;
-                Gizmos.DrawSphere(new Vector3(ddVertex.m_positions[0].x, ddVertex.m_positions[0].y,0), 0.1f);
-            }
-            //draw line
-            foreach (var ddVertex in m_lineListBatch)
-            {
-                Gizmos.color = ddVertex.m_color;
-                var p1 = ddVertex.m_positions[0];
-                var p2 = ddVertex.m_positions[1];
-                Gizmos.DrawLine(new Vector3(p1.x, p1.y, 0), new Vector3(p2.x, p2.y, 0));
-            }
-        }
-
-        public static void DrawPointGL(Vector2 pos, float radius, int segment, Color color)
+        public static void _DrawPoint(Vector2 pos, float radius, int segment, Color color)
         {
             GL.Begin(GL.TRIANGLES);
             GL.Color(color);
@@ -106,7 +88,7 @@ namespace bluebean.Box2DLite
             GL.End();
         }
 
-        private static void DrawLineGL(Vector2 p1, Vector2 p2, Color color)
+        private static void _DrawLine(Vector2 p1, Vector2 p2, Color color)
         {
             GL.Begin(GL.LINES);
             GL.Color(color);
@@ -115,7 +97,7 @@ namespace bluebean.Box2DLite
             GL.End();
         }
 
-        public void DrawAllGL()
+        public void DrawBatch()
         {
             //保存之前的变换矩阵
             GL.PushMatrix();
@@ -128,7 +110,7 @@ namespace bluebean.Box2DLite
             //draw point
             foreach (var ddVertex in m_vertexListBatch)
             {
-                DrawPointGL(new Vector2(ddVertex.m_positions[0].x, ddVertex.m_positions[0].y), 0.04f, 36,
+                _DrawPoint(new Vector2(ddVertex.m_positions[0].x, ddVertex.m_positions[0].y), 0.04f, 36,
                     ddVertex.m_color);
             }
             //draw line
@@ -136,7 +118,7 @@ namespace bluebean.Box2DLite
             {
                 var p1 = ddVertex.m_positions[0];
                 var p2 = ddVertex.m_positions[1];
-                DrawLineGL(new Vector2(p1.x, p1.y),new Vector2(p2.x,p2.y), ddVertex.m_color);
+                _DrawLine(new Vector2(p1.x, p1.y),new Vector2(p2.x,p2.y), ddVertex.m_color);
             }
             GL.PopMatrix();
         }
