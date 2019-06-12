@@ -186,6 +186,7 @@ namespace bluebean.Box2DLite
                     // Clamp the accumulated impulse
                     float Pn0 = c.m_pn;
                     c.m_pn = MathUtils.Max(Pn0 + dPn, 0.0f);
+                    //Debug.Log(dPn);
                     dPn = c.m_pn - Pn0;
                 }
                 else
@@ -201,7 +202,7 @@ namespace bluebean.Box2DLite
 
                 b2.m_velocity += b2.m_invMass * Pn;
                 b2.m_angularVelocity += b2.m_invI * Vec2.Cross(c.m_r2, Pn);
-
+                //Debug.Log(string.Format("key:{0} dPn:{1} vn:{2} bias:{3} vy:{4}", c.m_feature.value, dPn, vn, c.m_bias, b2.m_velocity.y));
                 // Relative velocity at contact
                 dv = b2.m_velocity + Vec2.Cross(b2.m_angularVelocity, c.m_r2) - b1.m_velocity -
                      Vec2.Cross(b1.m_angularVelocity, c.m_r1);

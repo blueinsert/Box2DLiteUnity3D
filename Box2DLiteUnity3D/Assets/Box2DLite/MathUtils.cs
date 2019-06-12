@@ -166,6 +166,10 @@ namespace bluebean.Box2DLite
             return new Mat22(m1 * m2.col1, m1 * m2.col2);
         }
 
+        public static Mat22 operator +(Mat22 m1, Mat22 m2)
+        {
+            return new Mat22(m1.col1 + m2.col1, m1.col2+m2.col2);
+        }
     }
 
     public static class MathUtils
